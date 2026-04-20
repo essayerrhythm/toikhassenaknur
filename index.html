@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тойға шақыру</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #b8926a;
+            --dark: #2c2c2c;
+            --bg: #f9f7f4;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--dark);
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .wedding-photo {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 250px 250px 0 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 20px 0 10px;
+        }
+
+        .date-location {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            color: var(--gold);
+        }
+
+        .timer-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin: 40px 0;
+        }
+
+        .timer-block {
+            background: white;
+            padding: 10px 2px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        .timer-block span {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--gold);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="music.m4a" type="audio/mpeg">
+    </audio>
+
+    <div class="music-control" onclick="toggleMusic()">
+        <span id="musicIcon">🎵</span>
+    </div>
+
+    <div class="container">
+        <img src="photo.jpeg" alt="Біздің сурет" class="wedding-photo">
+        
+        <p>Сіздерді ақ босаға аттау салтанатымыздың куәсі болуға шақырамыз!</p>
+        <h1>Хасен & Ақнұр</h1>
+        <div class="date-location">01.05.2026 • Алматы</div>
+
+        <div class="timer-container">
+            <div class="timer-block">
+                <span id="years">00</span>
+                <div class="label">Жыл</div>
+            </div>
+            <div class="timer-block">
+                <span id="days">00</span>
+                <div class="label">Күн</div>
+            </div>
+            <div class="timer-block">
+                <span id="hours">00</span>
+                <div class="label">Сағат</div>
+            </div>
+            <div class="timer-block">
+                <span id="minutes">00</span>
+                <div class="label">Мин</div>
+            </div>
+            <div class="timer-block">
+                <span id="seconds">00</span>
+                <div class="label">Сек</div>
+            </div>
+        </div>
+
+        <p>Той салтанатына дейін қалды:</p>
+
+        <a href="https://wa.me/77075203525?text=Сәлем!%20Тойға%20міндетті%20түрде%20барамыз!" class="btn">Тойға келетінімді растау</a>
+    </div>
+
+    <script>
+        // Дата: 2026 жыл, 4-ай (өйткені Мамыр - 4, санақ 0-ден басталады), 1-ші күн
+        const weddingDate = new Date(2026, 4, 1, 18, 0, 0).getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = weddingDate - now;
+
+            if (diff <= 0) {
+                document.querySelector(".timer-container").innerHTML = "<h3>Той басталды! ❤️</h3>";
+                return;
+            }
+
+            const second = 1000;
+            const minute = second * 60;
+            const hour = minute * 60;
+            const day = hour * 24;
+            const year = day * 365;
+
+            const yrs = Math.floor(diff / year);
+            const d = Math.floor((diff % year) / day);
+            const h = Math.floor((diff % day) / hour);
+            const m = Math.floor((diff % hour) / minute);
+            const s = Math.floor((diff % minute) / second);
+
+            document.getElementById("years").innerText = yrs;
+            document.getElementById("days").innerText = d;
+            document.getElementById("hours").innerText = h;
+            document.getElementById("minutes").innerText = m;
+            document.getElementById("seconds").innerText = s;
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        const music = document.getElementById("bgMusic");
+        const icon = document.getElementById("musicIcon");
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                icon.innerText = "⏸️";
+            } else {
+                music.pause();
+                icon.innerText = "🎵";
+            }
+        }
+    </script>
+</body>
+</html>
